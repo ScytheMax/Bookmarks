@@ -16,7 +16,9 @@ namespace ms.Bookmarks
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new frmBookmarks());
+			Form f = new frmBookmarks();
+			((frmBookmarks)f).init();
+			Application.Run(f);
 		}
 	}
 }

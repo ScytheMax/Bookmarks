@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Defines.cs" />
     <Compile Include="frmBookmarks.cs">
       <SubType>Form</SubType>
     </Compile>

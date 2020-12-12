@@ -47,7 +47,7 @@
 			this.ClientSize = new System.Drawing.Size(800, 450);
 			this.Controls.Add(this.dgvBMS);
 			this.Name = "frmBookmarks";
-			this.Text = "Form1";
+			this.Text = "frmBookmarks";
 			((System.ComponentModel.ISupportInitialize)(this.dgvBMS)).EndInit();
 			this.ResumeLayout(false);
 
