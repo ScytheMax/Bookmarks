@@ -31,6 +31,12 @@ namespace ms.Bookmarks
 			public static string config = "../../../../config/Bookmarks.config";
 		}
 
+		public static class FileName
+		{
+			public static string xml_Bookmarks = "Bookmarks.xml";
+		}
+
+
 		public static class Config
 		{
 			public static string dir = "dir";
@@ -40,5 +46,11 @@ namespace ms.Bookmarks
 		{
 			public static string Error = "Error";
 		}
+
+		public static class XML
+		{
+			public static string header = "<?xml version=\"1.0\" standalone=\"yes\"?>";
+		}
+		
 	}
 }
