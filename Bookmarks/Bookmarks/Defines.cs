@@ -25,5 +25,20 @@ namespace ms.Bookmarks
 			public static string Description = "Description";
 			public static string URL = "URL";
 		}
+
+		public static class FilePath
+		{
+			public static string config = "../../../../config/Bookmarks.config";
+		}
+
+		public static class Config
+		{
+			public static string dir = "dir";
+		}
+
+		public static class Win
+		{
+			public static string Error = "Error";
+		}
 	}
 }
