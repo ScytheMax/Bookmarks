@@ -49,6 +49,7 @@ namespace ms.Bookmarks
 
 		public static class XML
 		{
+			public static string KEY_DS = "ds";
 			public static string header = "<?xml version=\"1.0\" standalone=\"yes\"?>";
 		}
 		

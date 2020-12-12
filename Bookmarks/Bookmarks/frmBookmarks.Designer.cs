@@ -35,6 +35,7 @@
 			this.lblDescription = new System.Windows.Forms.Label();
 			this.lblURL = new System.Windows.Forms.Label();
 			this.pnlDetails = new System.Windows.Forms.Panel();
+			this.btnSave = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.dgvBMS)).BeginInit();
 			this.pnlDetails.SuspendLayout();
 			this.SuspendLayout();
@@ -102,11 +103,22 @@
 			this.pnlDetails.Size = new System.Drawing.Size(231, 83);
 			this.pnlDetails.TabIndex = 6;
 			// 
+			// btnSave
+			// 
+			this.btnSave.Location = new System.Drawing.Point(713, 415);
+			this.btnSave.Name = "btnSave";
+			this.btnSave.Size = new System.Drawing.Size(75, 23);
+			this.btnSave.TabIndex = 7;
+			this.btnSave.Text = "Save";
+			this.btnSave.UseVisualStyleBackColor = true;
+			this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+			// 
 			// frmBookmarks
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.ClientSize = new System.Drawing.Size(800, 450);
+			this.Controls.Add(this.btnSave);
 			this.Controls.Add(this.pnlDetails);
 			this.Controls.Add(this.btnAdd);
 			this.Controls.Add(this.dgvBMS);
@@ -128,6 +140,7 @@
 		private System.Windows.Forms.Label lblDescription;
 		private System.Windows.Forms.Label lblURL;
 		private System.Windows.Forms.Panel pnlDetails;
+		private System.Windows.Forms.Button btnSave;
 	}
 }
 

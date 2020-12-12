@@ -9,6 +9,7 @@ namespace ms.Bookmarks
 	public partial class frmBookmarks : Form
 	{
         private DataTable m_dtBMS;
+        private DataSet m_ds = new DataSet(def.XML.KEY_DS);
 
         public frmBookmarks()
 		{
@@ -54,21 +55,21 @@ namespace ms.Bookmarks
                 if (!Directory.Exists(Config.dir))
                     Directory.CreateDirectory(Config.dir);
 
-                var ds = new DataSet("ds");
-
                 string filePath = Path.Combine(Config.dir, def.FileName.xml_Bookmarks);
                 if (!File.Exists(filePath))
                 {
                     using (var fs = File.Create(filePath))
                     {
-                        ds.WriteXml(fs);
+                        m_ds.WriteXml(fs);
                     }
                 }
 
-                ds.ReadXml(filePath);
-                if (ds.Tables.Contains(def.Table.BMS))
-                    m_dtBMS = ds.Tables[def.Table.BMS];
+                m_ds.ReadXml(filePath);
+                if (m_ds.Tables.Contains(def.Table.BMS))
+                    m_dtBMS = m_ds.Tables[def.Table.BMS];
                 m_dtBMS.AcceptChanges();
+
+                txtDescription.Enabled = txtURL.Enabled = m_dtBMS.Rows.Count > 0;
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
@@ -107,7 +108,7 @@ namespace ms.Bookmarks
                     DataPropertyName = def.Field.BMS_Index,
                     Name = def.Field.BMS_Index,
                     Width = 100,
-                    Visible = false
+                    Visible = false,
                 });
 
 				dgvBMS.CurrentCellChanged += dgvBMS_CurrentCellChanged;
@@ -168,7 +169,26 @@ namespace ms.Bookmarks
 
                 dgvBMS.CurrentCell = dgvBMS.Rows.Cast<DataGridViewRow>().Where(r => (int)r.Cells[def.Field.BMS_Index].Value == bms_index).First()
                     .Cells[def.Field.BMS_Description];
+                txtDescription.Enabled = txtURL.Enabled = true;
                 txtDescription.Text = txtURL.Text = string.Empty;
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
+        }
+
+		private void btnSave_Click(object sender, EventArgs e)
+		{
+            try
+            {
+                if (m_dtBMS.GetChanges() == null)
+                    return;
+
+                // TODO check if just changes or updates can be added to the file
+                if (m_ds.Tables.Contains(def.Table.BMS))
+                    m_ds.Tables.Remove(def.Table.BMS);
+                m_ds.Tables.Add(m_dtBMS);
+
+                m_ds.WriteXml(Path.Combine(Config.dir, def.FileName.xml_Bookmarks), XmlWriteMode.WriteSchema);
+                m_dtBMS.AcceptChanges();
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
