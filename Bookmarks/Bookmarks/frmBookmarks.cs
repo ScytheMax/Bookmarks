@@ -69,7 +69,7 @@ namespace ms.Bookmarks
                     m_dtBMS = m_ds.Tables[def.Table.BMS];
                 m_dtBMS.AcceptChanges();
 
-                txtDescription.Enabled = txtURL.Enabled = m_dtBMS.Rows.Count > 0;
+                btnDelete.Enabled = txtDescription.Enabled = txtURL.Enabled = m_dtBMS.Rows.Count > 0;
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
@@ -123,7 +123,11 @@ namespace ms.Bookmarks
             try
             {
                 if (dgvBMS.CurrentRow == null)
+				{
+                    txtDescription.Text = txtURL.Text = string.Empty;
                     return;
+                }
+                    
 
                 txtDescription.Text = (string)dgvBMS.CurrentRow.Cells[def.Field.BMS_Description].Value;
                 txtURL.Text = (string)dgvBMS.CurrentRow.Cells[def.Field.BMS_URL].Value;
@@ -169,14 +173,31 @@ namespace ms.Bookmarks
 
                 dgvBMS.CurrentCell = dgvBMS.Rows.Cast<DataGridViewRow>().Where(r => (int)r.Cells[def.Field.BMS_Index].Value == bms_index).First()
                     .Cells[def.Field.BMS_Description];
-                txtDescription.Enabled = txtURL.Enabled = true;
+                btnDelete.Enabled = txtDescription.Enabled = txtURL.Enabled = true;
                 txtDescription.Text = txtURL.Text = string.Empty;
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
 
-		private void btnSave_Click(object sender, EventArgs e)
+
+		private void btnDelete_Click(object sender, EventArgs e)
 		{
+            try
+            {
+                if (dgvBMS.CurrentRow == null)
+                    return;
+
+                int bms_index = (int)dgvBMS.CurrentRow.Cells[def.Field.BMS_Index].Value;
+                DataRow dr = m_dtBMS.AsEnumerable().Where(r => r.RowState != DataRowState.Deleted && r.Field<int>(def.Field.BMS_Index) == bms_index).First();
+                dr.Delete();
+                btnDelete.Enabled = txtDescription.Enabled = txtURL.Enabled = dgvBMS.Rows.Count > 0;
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
+        }
+
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
             try
             {
                 if (m_dtBMS.GetChanges() == null)
@@ -192,5 +213,5 @@ namespace ms.Bookmarks
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
-	}
+    }
 }

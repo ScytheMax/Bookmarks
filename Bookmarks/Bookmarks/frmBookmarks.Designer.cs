@@ -36,6 +36,7 @@
 			this.lblURL = new System.Windows.Forms.Label();
 			this.pnlDetails = new System.Windows.Forms.Panel();
 			this.btnSave = new System.Windows.Forms.Button();
+			this.btnDelete = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.dgvBMS)).BeginInit();
 			this.pnlDetails.SuspendLayout();
 			this.SuspendLayout();
@@ -113,11 +114,22 @@
 			this.btnSave.UseVisualStyleBackColor = true;
 			this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
 			// 
+			// btnDelete
+			// 
+			this.btnDelete.Location = new System.Drawing.Point(161, 268);
+			this.btnDelete.Name = "btnDelete";
+			this.btnDelete.Size = new System.Drawing.Size(75, 23);
+			this.btnDelete.TabIndex = 8;
+			this.btnDelete.Text = "Delete";
+			this.btnDelete.UseVisualStyleBackColor = true;
+			this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+			// 
 			// frmBookmarks
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.ClientSize = new System.Drawing.Size(800, 450);
+			this.Controls.Add(this.btnDelete);
 			this.Controls.Add(this.btnSave);
 			this.Controls.Add(this.pnlDetails);
 			this.Controls.Add(this.btnAdd);
@@ -141,6 +153,7 @@
 		private System.Windows.Forms.Label lblURL;
 		private System.Windows.Forms.Panel pnlDetails;
 		private System.Windows.Forms.Button btnSave;
+		private System.Windows.Forms.Button btnDelete;
 	}
 }
 
