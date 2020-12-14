@@ -127,7 +127,6 @@ namespace ms.Bookmarks
                     txtDescription.Text = txtURL.Text = string.Empty;
                     return;
                 }
-                    
 
                 txtDescription.Text = (string)dgvBMS.CurrentRow.Cells[def.Field.BMS_Description].Value;
                 txtURL.Text = (string)dgvBMS.CurrentRow.Cells[def.Field.BMS_URL].Value;
@@ -196,10 +195,17 @@ namespace ms.Bookmarks
         }
 
 
+        private void validateFinal()
+		{
+            foreach (DataRow dr in m_dtBMS.Rows)
+                dr.EndEdit();
+		}
+
         private void btnSave_Click(object sender, EventArgs e)
         {
             try
             {
+                validateFinal();
                 if (m_dtBMS.GetChanges() == null)
                     return;
 
@@ -207,7 +213,7 @@ namespace ms.Bookmarks
                 if (m_ds.Tables.Contains(def.Table.BMS))
                     m_ds.Tables.Remove(def.Table.BMS);
                 m_ds.Tables.Add(m_dtBMS);
-
+                
                 m_ds.WriteXml(Path.Combine(Config.dir, def.FileName.xml_Bookmarks), XmlWriteMode.WriteSchema);
                 m_dtBMS.AcceptChanges();
             }
