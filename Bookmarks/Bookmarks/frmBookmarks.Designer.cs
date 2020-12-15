@@ -37,6 +37,7 @@
 			this.pnlDetails = new System.Windows.Forms.Panel();
 			this.btnSave = new System.Windows.Forms.Button();
 			this.btnDelete = new System.Windows.Forms.Button();
+			this.cboBookmarkType = new System.Windows.Forms.ComboBox();
 			((System.ComponentModel.ISupportInitialize)(this.dgvBMS)).BeginInit();
 			this.pnlDetails.SuspendLayout();
 			this.SuspendLayout();
@@ -44,14 +45,14 @@
 			// dgvBMS
 			// 
 			this.dgvBMS.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.dgvBMS.Location = new System.Drawing.Point(80, 45);
+			this.dgvBMS.Location = new System.Drawing.Point(80, 72);
 			this.dgvBMS.Name = "dgvBMS";
 			this.dgvBMS.Size = new System.Drawing.Size(333, 217);
 			this.dgvBMS.TabIndex = 0;
 			// 
 			// btnAdd
 			// 
-			this.btnAdd.Location = new System.Drawing.Point(80, 268);
+			this.btnAdd.Location = new System.Drawing.Point(80, 295);
 			this.btnAdd.Name = "btnAdd";
 			this.btnAdd.Size = new System.Drawing.Size(75, 23);
 			this.btnAdd.TabIndex = 1;
@@ -99,7 +100,7 @@
 			this.pnlDetails.Controls.Add(this.lblURL);
 			this.pnlDetails.Controls.Add(this.txtURL);
 			this.pnlDetails.Controls.Add(this.lblDescription);
-			this.pnlDetails.Location = new System.Drawing.Point(476, 45);
+			this.pnlDetails.Location = new System.Drawing.Point(476, 72);
 			this.pnlDetails.Name = "pnlDetails";
 			this.pnlDetails.Size = new System.Drawing.Size(231, 83);
 			this.pnlDetails.TabIndex = 6;
@@ -116,7 +117,7 @@
 			// 
 			// btnDelete
 			// 
-			this.btnDelete.Location = new System.Drawing.Point(161, 268);
+			this.btnDelete.Location = new System.Drawing.Point(161, 295);
 			this.btnDelete.Name = "btnDelete";
 			this.btnDelete.Size = new System.Drawing.Size(75, 23);
 			this.btnDelete.TabIndex = 8;
@@ -124,11 +125,20 @@
 			this.btnDelete.UseVisualStyleBackColor = true;
 			this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
 			// 
+			// cboBookmarkType
+			// 
+			this.cboBookmarkType.FormattingEnabled = true;
+			this.cboBookmarkType.Location = new System.Drawing.Point(80, 23);
+			this.cboBookmarkType.Name = "cboBookmarkType";
+			this.cboBookmarkType.Size = new System.Drawing.Size(121, 21);
+			this.cboBookmarkType.TabIndex = 9;
+			// 
 			// frmBookmarks
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.ClientSize = new System.Drawing.Size(800, 450);
+			this.Controls.Add(this.cboBookmarkType);
 			this.Controls.Add(this.btnDelete);
 			this.Controls.Add(this.btnSave);
 			this.Controls.Add(this.pnlDetails);
@@ -154,6 +164,7 @@
 		private System.Windows.Forms.Panel pnlDetails;
 		private System.Windows.Forms.Button btnSave;
 		private System.Windows.Forms.Button btnDelete;
+		private System.Windows.Forms.ComboBox cboBookmarkType;
 	}
 }
 

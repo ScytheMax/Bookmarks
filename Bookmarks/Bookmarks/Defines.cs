@@ -10,47 +10,61 @@ namespace ms.Bookmarks
 	{
 		public static class Table
 		{
-			public static string BMS = "BMS";
+			public const string BMS = "BMS";
+			public const string d_BMT = "BMT";
 		}
 
 		public static class Field
 		{
-			public static string BMS_Index = "BMS_Index";
-			public static string BMS_Description = "BMS_Description";
-			public static string BMS_URL = "BMS_URL";
+			public const string BMS_Index = "BMS_Index";
+			public const string BMS_Description = "BMS_Description";
+			public const string BMS_URL = "BMS_URL";
+
+			public const string d_BMT_Index = "d_BMT_Index";
+			public const string BMT_Value = "BMT_Value";
+			public const string BMT_Define = "BMT_Define";
+		}
+
+		public static class BookmarkType
+		{
+			public const int BMT_Value_General = 1;
+			public const int BMT_Value_Music = 2;
+
+			public const string BMT_Define_General = "General";
+			public const string BMT_Define_Music = "Music";
 		}
 
 		public static class colHeader
 		{
-			public static string Description = "Description";
-			public static string URL = "URL";
+			public const string Description = "Description";
+			public const string URL = "URL";
 		}
 
 		public static class FilePath
 		{
-			public static string config = "../../../../config/Bookmarks.config";
+			public const string config = "../../../../config/Bookmarks.config";
 		}
 
 		public static class FileName
 		{
-			public static string xml_Bookmarks = "Bookmarks.xml";
+			public const string xml_Bookmarks = "Bookmarks.xml";
 		}
 
 
 		public static class Config
 		{
-			public static string dir = "dir";
+			public const string dir = "dir";
 		}
 
 		public static class Win
 		{
-			public static string Error = "Error";
+			public const string Error = "Error";
 		}
 
 		public static class XML
 		{
-			public static string KEY_DS = "ds";
-			public static string header = "<?xml version=\"1.0\" standalone=\"yes\"?>";
+			public const string KEY_DS = "ds";
+			public const string header = "<?xml version=\"1.0\" standalone=\"yes\"?>";
 		}
 		
 	}

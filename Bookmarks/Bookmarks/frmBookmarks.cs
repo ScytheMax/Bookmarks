@@ -9,6 +9,7 @@ namespace ms.Bookmarks
 	public partial class frmBookmarks : Form
 	{
         private DataTable m_dtBMS;
+        private DataTable m_dtBMT;
         private DataSet m_ds = new DataSet(def.XML.KEY_DS);
 
         public frmBookmarks()
@@ -18,13 +19,14 @@ namespace ms.Bookmarks
 
         public void init()
         {
-            prepare_dtBMS();
+            prepare_DataTables();
             load();
+            prepare_Form();
             prepare_dgvBMS();
 
         }
 
-        private void prepare_dtBMS()
+        private void prepare_DataTables()
         {
             try
             {
@@ -44,6 +46,24 @@ namespace ms.Bookmarks
                 {
                     AllowDBNull = false,
                 });
+
+                m_dtBMT = new DataTable(def.Table.d_BMT);
+                m_dtBMT.Columns.Add(new DataColumn(def.Field.d_BMT_Index, typeof(int))
+                {
+                    AllowDBNull = false,
+                    Unique = true,
+                });
+                m_dtBMT.Columns.Add(new DataColumn(def.Field.BMT_Value, typeof(int))
+                {
+                    AllowDBNull = false,
+                });
+                m_dtBMT.Columns.Add(new DataColumn(def.Field.BMT_Define, typeof(string))
+                {
+                    AllowDBNull = false,
+                });
+                m_dtBMT.Rows.Add(1, 1, def.BookmarkType.BMT_Define_General);
+                m_dtBMT.Rows.Add(2, 2, def.BookmarkType.BMT_Define_Music);
+                
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
@@ -72,6 +92,14 @@ namespace ms.Bookmarks
                 btnDelete.Enabled = txtDescription.Enabled = txtURL.Enabled = m_dtBMS.Rows.Count > 0;
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
+        }
+
+        private void prepare_Form()
+		{
+            cboBookmarkType.DisplayMember = def.Field.BMT_Define;
+            cboBookmarkType.ValueMember = def.Field.BMT_Value;
+            cboBookmarkType.DataSource = m_dtBMT;
+            cboBookmarkType.SelectedValue = def.BookmarkType.BMT_Value_Music;
         }
 
         private void prepare_dgvBMS()
