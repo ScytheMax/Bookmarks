@@ -12,6 +12,8 @@ namespace ms.Bookmarks
         private DataTable m_dtBMT;
         private DataSet m_ds = new DataSet(def.XML.KEY_DS);
 
+        private int m_bmt_value;
+
         public frmBookmarks()
 		{
 			InitializeComponent();
@@ -21,8 +23,8 @@ namespace ms.Bookmarks
         {
             prepare_DataTables();
             load();
-            prepare_Form();
             prepare_dgvBMS();
+            prepare_Form();
 
         }
 
@@ -31,21 +33,21 @@ namespace ms.Bookmarks
             try
             {
                 m_dtBMS = new DataTable(def.Table.BMS);
-
-                m_dtBMS.Columns.Add(new DataColumn(def.Field.BMS_Index, typeof(int))
+                var col_BMS = m_dtBMS.Columns;
+                col_BMS.Add(new DataColumn(def.Field.BMS_Index, typeof(int))
                 {
                     AllowDBNull = false,
                     AutoIncrement = true,
                     Unique = true,
                 });
-                m_dtBMS.Columns.Add(new DataColumn(def.Field.BMS_Description, typeof(string))
-                {
-                    AllowDBNull = false,
-                });
-                m_dtBMS.Columns.Add(new DataColumn(def.Field.BMS_URL, typeof(string))
-                {
-                    AllowDBNull = false,
-                });
+                col_BMS.Add(new DataColumn(def.Field.BMS_Description, typeof(string)));
+                col_BMS.Add(new DataColumn(def.Field.BMS_URL, typeof(string)));
+                col_BMS.Add(new DataColumn(def.Field.BMS_Band, typeof(string)));
+                col_BMS.Add(new DataColumn(def.Field.BMS_Album, typeof(string)));
+                col_BMS.Add(new DataColumn(def.Field.BMS_Song, typeof(string)));
+
+                foreach (DataColumn col in col_BMS)
+                    col.AllowDBNull = true;
 
                 m_dtBMT = new DataTable(def.Table.d_BMT);
                 m_dtBMT.Columns.Add(new DataColumn(def.Field.d_BMT_Index, typeof(int))
@@ -63,7 +65,6 @@ namespace ms.Bookmarks
                 });
                 m_dtBMT.Rows.Add(1, 1, def.BookmarkType.BMT_Define_General);
                 m_dtBMT.Rows.Add(2, 2, def.BookmarkType.BMT_Define_Music);
-                
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
@@ -86,7 +87,7 @@ namespace ms.Bookmarks
 
                 m_ds.ReadXml(filePath);
                 if (m_ds.Tables.Contains(def.Table.BMS))
-                    m_dtBMS = m_ds.Tables[def.Table.BMS];
+                    m_dtBMS.Merge(m_ds.Tables[def.Table.BMS]);
                 m_dtBMS.AcceptChanges();
 
                 btnDelete.Enabled = txtDescription.Enabled = txtURL.Enabled = m_dtBMS.Rows.Count > 0;
@@ -100,6 +101,7 @@ namespace ms.Bookmarks
             cboBookmarkType.ValueMember = def.Field.BMT_Value;
             cboBookmarkType.DataSource = m_dtBMT;
             cboBookmarkType.SelectedValue = def.BookmarkType.BMT_Value_Music;
+            m_bmt_value = def.BookmarkType.BMT_Value_Music;
         }
 
         private void prepare_dgvBMS()
@@ -117,11 +119,37 @@ namespace ms.Bookmarks
 
                 dgvBMS.Columns.Add(new DataGridViewTextBoxColumn()
                 {
+                    DataPropertyName = def.Field.BMS_Band,
+                    Name = def.Field.BMS_Band,
+                    HeaderText = def.colHeader.Band,
+                    Width = 100,
+                    ReadOnly = true,
+                });
+                dgvBMS.Columns.Add(new DataGridViewTextBoxColumn()
+                {
+                    DataPropertyName = def.Field.BMS_Album,
+                    Name = def.Field.BMS_Album,
+                    HeaderText = def.colHeader.Album,
+                    Width = 100,
+                    ReadOnly = true
+                });
+                dgvBMS.Columns.Add(new DataGridViewTextBoxColumn()
+                {
+                    DataPropertyName = def.Field.BMS_Song,
+                    Name = def.Field.BMS_Song,
+                    HeaderText = def.colHeader.Song,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                    ReadOnly = true
+                });
+
+                dgvBMS.Columns.Add(new DataGridViewTextBoxColumn()
+                {
                     DataPropertyName = def.Field.BMS_Description,
                     Name = def.Field.BMS_Description,
                     HeaderText = def.colHeader.Description,
-                    Width = 150,
-                    ReadOnly = true
+                    Width = 100,
+                    ReadOnly = true,
+                    Visible = false,
                 });
                 dgvBMS.Columns.Add(new DataGridViewTextBoxColumn()
                 {
@@ -139,7 +167,7 @@ namespace ms.Bookmarks
                     Visible = false,
                 });
 
-				dgvBMS.CurrentCellChanged += dgvBMS_CurrentCellChanged;
+                dgvBMS.CurrentCellChanged += dgvBMS_CurrentCellChanged;
                 
                 dgvBMS.DataSource = m_dtBMS;
             }
@@ -247,5 +275,36 @@ namespace ms.Bookmarks
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
-    }
+
+		private void cboBookmarkType_SelectedValueChanged(object sender, EventArgs e)
+		{
+            try
+            {          
+                if ((int)(cboBookmarkType.SelectedValue ?? 0) == m_bmt_value)
+                    return;
+                else
+                    m_bmt_value = (int)cboBookmarkType.SelectedValue;
+
+                if (m_bmt_value == def.BookmarkType.BMT_Value_Music)
+				{
+                    dgvBMS.Columns[def.Field.BMS_Band].Visible = true;
+                    dgvBMS.Columns[def.Field.BMS_Album].Visible = true;
+                    dgvBMS.Columns[def.Field.BMS_Song].Visible = true;
+                    dgvBMS.Columns[def.Field.BMS_Description].Visible = false;
+                    pnlDetailsMusic.Visible = true;
+                    pnlDetailsGeneral.Visible = false;
+                }
+                else
+				{
+                    dgvBMS.Columns[def.Field.BMS_Band].Visible = false;
+                    dgvBMS.Columns[def.Field.BMS_Album].Visible = false;
+                    dgvBMS.Columns[def.Field.BMS_Song].Visible = false;
+                    dgvBMS.Columns[def.Field.BMS_Description].Visible = true;
+                    pnlDetailsMusic.Visible = false;
+                    pnlDetailsGeneral.Visible = true;
+                }
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
+        }
+	}
 }

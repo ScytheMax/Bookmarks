@@ -20,6 +20,10 @@ namespace ms.Bookmarks
 			public const string BMS_Description = "BMS_Description";
 			public const string BMS_URL = "BMS_URL";
 
+			public const string BMS_Band = "BMS_Band";
+			public const string BMS_Album = "BMS_Album";
+			public const string BMS_Song = "BMS_Song";
+
 			public const string d_BMT_Index = "d_BMT_Index";
 			public const string BMT_Value = "BMT_Value";
 			public const string BMT_Define = "BMT_Define";
@@ -36,6 +40,10 @@ namespace ms.Bookmarks
 
 		public static class colHeader
 		{
+			public const string Band = "Band";
+			public const string Album = "Album";
+			public const string Song = "Song";
+
 			public const string Description = "Description";
 			public const string URL = "URL";
 		}
