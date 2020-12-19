@@ -17,8 +17,9 @@ namespace ms.Bookmarks
 		public static class Field
 		{
 			public const string BMS_Index = "BMS_Index";
-			public const string BMS_Description = "BMS_Description";
+			public const string BMS_BMT_Value = "BMS_BMT_Value";
 			public const string BMS_URL = "BMS_URL";
+			public const string BMS_Description = "BMS_Description";
 
 			public const string BMS_Band = "BMS_Band";
 			public const string BMS_Album = "BMS_Album";
