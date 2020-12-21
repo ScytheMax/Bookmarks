@@ -15,6 +15,8 @@ namespace ms.Bookmarks
         private DataSet m_ds = new DataSet(def.XML.KEY_DS);
 
         private int m_bmt_value;
+        private int? m_bms_row_index_music = null;
+        private int? m_bms_row_index_general = null;
 
         public frmBookmarks()
 		{
@@ -24,7 +26,7 @@ namespace ms.Bookmarks
         public void init()
         {
             prepare_DataTables();
-            load();
+            loadXML();
             prepare_dgvBMS();
             prepare_Forms();
 
@@ -38,14 +40,10 @@ namespace ms.Bookmarks
                 var col_BMS = m_dtBMS.Columns;
                 col_BMS.Add(new DataColumn(def.Field.BMS_Index, typeof(int))
                 {
-                    AllowDBNull = false,
                     AutoIncrement = true,
                     Unique = true,
                 });
-                col_BMS.Add(new DataColumn(def.Field.BMS_BMT_Value, typeof(int))
-                {
-                    AllowDBNull = false,
-                });
+                col_BMS.Add(new DataColumn(def.Field.BMS_BMT_Value, typeof(int)));
                 col_BMS.Add(new DataColumn(def.Field.BMS_Description, typeof(string)));
                 col_BMS.Add(new DataColumn(def.Field.BMS_URL, typeof(string)));
                 col_BMS.Add(new DataColumn(def.Field.BMS_Band, typeof(string)));
@@ -54,6 +52,8 @@ namespace ms.Bookmarks
 
                 foreach (DataColumn col in col_BMS)
                     col.AllowDBNull = true;
+                col_BMS[def.Field.BMS_Index].AllowDBNull = false;
+                col_BMS[def.Field.BMS_BMT_Value].AllowDBNull = false;
 
                 m_dtBMT = new DataTable(def.Table.d_BMT);
                 var col_BMT = m_dtBMT.Columns;
@@ -71,7 +71,7 @@ namespace ms.Bookmarks
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
 
-        private void load()
+        private void loadXML()
         {
             try
             {
@@ -106,15 +106,6 @@ namespace ms.Bookmarks
                 txtDescription.Enabled = dgvBMS.Rows.Count > 0;
 
             btnDelete.Enabled = txtURL.Enabled = dgvBMS.Rows.Count > 0;
-        }
-
-        private void prepare_Forms()
-		{
-            cboBookmarkType.DisplayMember = def.Field.BMT_Define;
-            cboBookmarkType.ValueMember = def.Field.BMT_Value;
-            cboBookmarkType.DataSource = m_dtBMT;
-            cboBookmarkType.SelectedValue = def.BookmarkType.BMT_Value_Music;
-            m_bmt_value = def.BookmarkType.BMT_Value_Music;
         }
 
         private void prepare_dgvBMS()
@@ -192,6 +183,15 @@ namespace ms.Bookmarks
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
 
+        private void prepare_Forms()
+		{
+            cboBookmarkType.DisplayMember = def.Field.BMT_Define;
+            cboBookmarkType.ValueMember = def.Field.BMT_Value;
+            cboBookmarkType.DataSource = m_dtBMT;
+            cboBookmarkType.SelectedValue = def.BookmarkType.BMT_Value_Music;
+            m_bmt_value = def.BookmarkType.BMT_Value_Music;
+        }
+
 		private void dgvBMS_CurrentCellChanged(object sender, EventArgs e)
 		{
             try
@@ -205,7 +205,7 @@ namespace ms.Bookmarks
                     return;
                 }
 
-                if ((int)cboBookmarkType.SelectedValue == def.BookmarkType.BMT_Value_Music)
+                if (m_bmt_value == def.BookmarkType.BMT_Value_Music)
 				{
                     txtBand.Text = (string)dgvBMS.CurrentRow.Cells[def.Field.BMS_Band].Value;
                     txtAlbum.Text = (string)dgvBMS.CurrentRow.Cells[def.Field.BMS_Album].Value;
@@ -219,7 +219,8 @@ namespace ms.Bookmarks
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
 
-        private void txtBand_TextChanged(object sender, EventArgs e)
+		#region textboxes changed
+		private void txtBand_TextChanged(object sender, EventArgs e)
         {
             try
             {
@@ -283,8 +284,10 @@ namespace ms.Bookmarks
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
+		#endregion
 
-        private void btnAdd_Click(object sender, EventArgs e)
+		#region buttons click
+		private void btnAdd_Click(object sender, EventArgs e)
 		{
             try
 			{
@@ -307,7 +310,7 @@ namespace ms.Bookmarks
                 dr[def.Field.BMS_URL] = string.Empty;
                 ((DataTable)(m_bsBMS.DataSource)).Rows.Add(dr);
 
-                // select new row, trigger current cell changed
+                // selects new row, triggers current cell changed
                 dgvBMS.CurrentCell = dgvBMS.Rows.Cast<DataGridViewRow>().Where(r => (int)r.Cells[def.Field.BMS_Index].Value == bms_index).First()
                     .Cells[def.Field.BMS_URL];
 
@@ -333,17 +336,12 @@ namespace ms.Bookmarks
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
 
-        private void validateFinal()
-		{
-            foreach (DataRow dr in m_dtBMS.Rows)
-                dr.EndEdit();
-		}
-
         private void btnSave_Click(object sender, EventArgs e)
         {
             try
             {
                 validateFinal();
+
                 if (m_dtBMS.GetChanges() == null)
                     return;
 
@@ -357,11 +355,23 @@ namespace ms.Bookmarks
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
+        #endregion
+
+        private void validateFinal()
+		{
+            foreach (DataRow dr in m_dtBMS.Rows)
+                dr.EndEdit();
+		}
 
 		private void cboBookmarkType_SelectedValueChanged(object sender, EventArgs e)
 		{
             try
-            {         
+            {
+                if (m_bmt_value == def.BookmarkType.BMT_Value_Music)
+                    m_bms_row_index_music = dgvBMS.CurrentRow?.Index;
+                else
+                    m_bms_row_index_general = dgvBMS.CurrentRow?.Index;
+
                 if ((int)(cboBookmarkType.SelectedValue ?? 0) == m_bmt_value)
                     return;
                 else
@@ -378,8 +388,8 @@ namespace ms.Bookmarks
                 pnlDetailsGeneral.Visible = !visible;
 
                 if (dgvBMS.Rows.Count > 0)
-				    dgvBMS.CurrentCell = dgvBMS.Rows[0].Cells[def.Field.BMS_URL];
-                
+                    dgvBMS.CurrentCell = dgvBMS.Rows[(m_bmt_value == def.BookmarkType.BMT_Value_Music ? m_bms_row_index_music : m_bms_row_index_general) ?? 0]
+                        .Cells[def.Field.BMS_URL];
 
                 Forms_Enabled();
             }
