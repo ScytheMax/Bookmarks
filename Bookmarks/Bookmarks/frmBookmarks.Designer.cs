@@ -76,9 +76,10 @@
 			// 
 			// txtURL
 			// 
-			this.txtURL.Location = new System.Drawing.Point(97, 13);
+			this.txtURL.Location = new System.Drawing.Point(56, 13);
+			this.txtURL.Multiline = true;
 			this.txtURL.Name = "txtURL";
-			this.txtURL.Size = new System.Drawing.Size(100, 20);
+			this.txtURL.Size = new System.Drawing.Size(141, 40);
 			this.txtURL.TabIndex = 3;
 			this.txtURL.TextChanged += new System.EventHandler(this.txtURL_TextChanged);
 			// 
@@ -97,11 +98,12 @@
 			this.pnlDetails.Controls.Add(this.txtURL);
 			this.pnlDetails.Location = new System.Drawing.Point(461, 72);
 			this.pnlDetails.Name = "pnlDetails";
-			this.pnlDetails.Size = new System.Drawing.Size(231, 46);
+			this.pnlDetails.Size = new System.Drawing.Size(231, 70);
 			this.pnlDetails.TabIndex = 6;
 			// 
 			// btnSave
 			// 
+			this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.btnSave.Location = new System.Drawing.Point(583, 295);
 			this.btnSave.Name = "btnSave";
 			this.btnSave.Size = new System.Drawing.Size(75, 23);
@@ -138,7 +140,7 @@
 			this.pnlDetailsMusic.Controls.Add(this.lblAlbum);
 			this.pnlDetailsMusic.Controls.Add(this.txtAlbum);
 			this.pnlDetailsMusic.Controls.Add(this.lblBand);
-			this.pnlDetailsMusic.Location = new System.Drawing.Point(461, 124);
+			this.pnlDetailsMusic.Location = new System.Drawing.Point(461, 148);
 			this.pnlDetailsMusic.Name = "pnlDetailsMusic";
 			this.pnlDetailsMusic.Size = new System.Drawing.Size(231, 110);
 			this.pnlDetailsMusic.TabIndex = 10;
@@ -154,17 +156,17 @@
 			// 
 			// txtSong
 			// 
-			this.txtSong.Location = new System.Drawing.Point(97, 70);
+			this.txtSong.Location = new System.Drawing.Point(87, 70);
 			this.txtSong.Name = "txtSong";
-			this.txtSong.Size = new System.Drawing.Size(100, 20);
+			this.txtSong.Size = new System.Drawing.Size(110, 20);
 			this.txtSong.TabIndex = 6;
 			this.txtSong.TextChanged += new System.EventHandler(this.txtSong_TextChanged);
 			// 
 			// txtBand
 			// 
-			this.txtBand.Location = new System.Drawing.Point(97, 18);
+			this.txtBand.Location = new System.Drawing.Point(87, 18);
 			this.txtBand.Name = "txtBand";
-			this.txtBand.Size = new System.Drawing.Size(100, 20);
+			this.txtBand.Size = new System.Drawing.Size(110, 20);
 			this.txtBand.TabIndex = 2;
 			this.txtBand.TextChanged += new System.EventHandler(this.txtBand_TextChanged);
 			// 
@@ -179,9 +181,9 @@
 			// 
 			// txtAlbum
 			// 
-			this.txtAlbum.Location = new System.Drawing.Point(97, 44);
+			this.txtAlbum.Location = new System.Drawing.Point(87, 44);
 			this.txtAlbum.Name = "txtAlbum";
-			this.txtAlbum.Size = new System.Drawing.Size(100, 20);
+			this.txtAlbum.Size = new System.Drawing.Size(110, 20);
 			this.txtAlbum.TabIndex = 3;
 			this.txtAlbum.TextChanged += new System.EventHandler(this.txtAlbum_TextChanged);
 			// 
@@ -198,16 +200,16 @@
 			// 
 			this.pnlDetailsGeneral.Controls.Add(this.txtDescription);
 			this.pnlDetailsGeneral.Controls.Add(this.lblDescription);
-			this.pnlDetailsGeneral.Location = new System.Drawing.Point(461, 124);
+			this.pnlDetailsGeneral.Location = new System.Drawing.Point(461, 148);
 			this.pnlDetailsGeneral.Name = "pnlDetailsGeneral";
 			this.pnlDetailsGeneral.Size = new System.Drawing.Size(231, 46);
 			this.pnlDetailsGeneral.TabIndex = 11;
 			// 
 			// txtDescription
 			// 
-			this.txtDescription.Location = new System.Drawing.Point(97, 18);
+			this.txtDescription.Location = new System.Drawing.Point(87, 18);
 			this.txtDescription.Name = "txtDescription";
-			this.txtDescription.Size = new System.Drawing.Size(100, 20);
+			this.txtDescription.Size = new System.Drawing.Size(110, 20);
 			this.txtDescription.TabIndex = 2;
 			this.txtDescription.TextChanged += new System.EventHandler(this.txtDescription_TextChanged);
 			// 
@@ -224,7 +226,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-			this.ClientSize = new System.Drawing.Size(811, 343);
+			this.ClientSize = new System.Drawing.Size(711, 343);
 			this.Controls.Add(this.pnlDetailsGeneral);
 			this.Controls.Add(this.pnlDetailsMusic);
 			this.Controls.Add(this.cboBookmarkType);

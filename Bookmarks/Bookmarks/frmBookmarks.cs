@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -151,7 +152,7 @@ namespace ms.Bookmarks
                     DataPropertyName = def.Field.BMS_Description,
                     Name = def.Field.BMS_Description,
                     HeaderText = def.colHeader.Description,
-                    Width = 100,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
                     ReadOnly = true,
                     Visible = false,
                 });
@@ -160,8 +161,7 @@ namespace ms.Bookmarks
                     DataPropertyName = def.Field.BMS_URL,
                     Name = def.Field.BMS_URL,
                     HeaderText = def.colHeader.URL,
-                    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
-                    ReadOnly = true
+                    Visible = false,
                 });
                 dgvBMS.Columns.Add(new DataGridViewTextBoxColumn()
                 {
@@ -177,13 +177,14 @@ namespace ms.Bookmarks
                 });
 
                 dgvBMS.CurrentCellChanged += dgvBMS_CurrentCellChanged;
+				dgvBMS.CellDoubleClick += dgvBMS_CellDoubleClick;
                 
                 dgvBMS.DataSource = m_bsBMS;
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
 
-        private void prepare_Forms()
+		private void prepare_Forms()
 		{
             cboBookmarkType.DisplayMember = def.Field.BMT_Define;
             cboBookmarkType.ValueMember = def.Field.BMT_Value;
@@ -219,8 +220,20 @@ namespace ms.Bookmarks
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
 
-		#region textboxes changed
-		private void txtBand_TextChanged(object sender, EventArgs e)
+        private void dgvBMS_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            try
+            {
+                if (dgvBMS.CurrentRow == null)
+                    return;
+
+                Process.Start((string)dgvBMS.CurrentRow.Cells[def.Field.BMS_URL].Value);
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
+        }
+
+        #region textboxes changed
+        private void txtBand_TextChanged(object sender, EventArgs e)
         {
             try
             {
@@ -312,7 +325,7 @@ namespace ms.Bookmarks
 
                 // selects new row, triggers current cell changed
                 dgvBMS.CurrentCell = dgvBMS.Rows.Cast<DataGridViewRow>().Where(r => (int)r.Cells[def.Field.BMS_Index].Value == bms_index).First()
-                    .Cells[def.Field.BMS_URL];
+                    .Cells[m_bmt_value == def.BookmarkType.BMT_Value_Music ? def.Field.BMS_Band : def.Field.BMS_Description];
 
                 Forms_Enabled();
             }
@@ -389,7 +402,7 @@ namespace ms.Bookmarks
 
                 if (dgvBMS.Rows.Count > 0)
                     dgvBMS.CurrentCell = dgvBMS.Rows[(m_bmt_value == def.BookmarkType.BMT_Value_Music ? m_bms_row_index_music : m_bms_row_index_general) ?? 0]
-                        .Cells[def.Field.BMS_URL];
+                        .Cells[m_bmt_value == def.BookmarkType.BMT_Value_Music ? def.Field.BMS_Band : def.Field.BMS_Description];
 
                 Forms_Enabled();
             }
