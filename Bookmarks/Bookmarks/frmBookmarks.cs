@@ -16,7 +16,8 @@ namespace ms.Bookmarks
         private DataSet m_ds = new DataSet(def.XML.KEY_DS);
 
         private int m_bmt_value;
-        private int? m_bms_row_index_music = null;
+        private int? m_bms_row_index_album = null;
+        private int? m_bms_row_index_song = null;
         private int? m_bms_row_index_general = null;
 
         public frmBookmarks()
@@ -66,8 +67,9 @@ namespace ms.Bookmarks
                 foreach (DataColumn col in col_BMT)
                     col.AllowDBNull = false;
 
-                m_dtBMT.Rows.Add(1, 1, def.BookmarkType.BMT_Define_General);
-                m_dtBMT.Rows.Add(2, 2, def.BookmarkType.BMT_Define_Music);
+                m_dtBMT.Rows.Add(1, def.BookmarkType.BMT_Value_General, def.BookmarkType.BMT_Define_General);
+                m_dtBMT.Rows.Add(2, def.BookmarkType.BMT_Value_Song, def.BookmarkType.BMT_Define_Song);
+                m_dtBMT.Rows.Add(3, def.BookmarkType.BMT_Value_Album, def.BookmarkType.BMT_Define_Album);
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
@@ -101,7 +103,9 @@ namespace ms.Bookmarks
 
         private void Forms_Enabled()
         {
-            if (m_bmt_value == def.BookmarkType.BMT_Value_Music)
+            if (m_bmt_value == def.BookmarkType.BMT_Value_Album)
+                txtBand.Enabled = txtAlbum.Enabled = dgvBMS.Rows.Count > 0;
+            else if (m_bmt_value == def.BookmarkType.BMT_Value_Song)
                 txtBand.Enabled = txtAlbum.Enabled = txtSong.Enabled = dgvBMS.Rows.Count > 0;
             else
                 txtDescription.Enabled = dgvBMS.Rows.Count > 0;
@@ -135,7 +139,7 @@ namespace ms.Bookmarks
                     DataPropertyName = def.Field.BMS_Album,
                     Name = def.Field.BMS_Album,
                     HeaderText = def.colHeader.Album,
-                    Width = 100,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
                     ReadOnly = true
                 });
                 dgvBMS.Columns.Add(new DataGridViewTextBoxColumn()
@@ -189,8 +193,8 @@ namespace ms.Bookmarks
             cboBookmarkType.DisplayMember = def.Field.BMT_Define;
             cboBookmarkType.ValueMember = def.Field.BMT_Value;
             cboBookmarkType.DataSource = m_dtBMT;
-            cboBookmarkType.SelectedValue = def.BookmarkType.BMT_Value_Music;
-            m_bmt_value = def.BookmarkType.BMT_Value_Music;
+            cboBookmarkType.SelectedValue = def.BookmarkType.BMT_Value_Song;
+            m_bmt_value = def.BookmarkType.BMT_Value_Song;
         }
 
 		private void dgvBMS_CurrentCellChanged(object sender, EventArgs e)
@@ -206,7 +210,12 @@ namespace ms.Bookmarks
                     return;
                 }
 
-                if (m_bmt_value == def.BookmarkType.BMT_Value_Music)
+                if (m_bmt_value == def.BookmarkType.BMT_Value_Album)
+                {
+                    txtBand.Text = (string)dgvBMS.CurrentRow.Cells[def.Field.BMS_Band].Value;
+                    txtAlbum.Text = (string)dgvBMS.CurrentRow.Cells[def.Field.BMS_Album].Value;
+                }
+                else if (m_bmt_value == def.BookmarkType.BMT_Value_Song)
 				{
                     txtBand.Text = (string)dgvBMS.CurrentRow.Cells[def.Field.BMS_Band].Value;
                     txtAlbum.Text = (string)dgvBMS.CurrentRow.Cells[def.Field.BMS_Album].Value;
@@ -307,9 +316,15 @@ namespace ms.Bookmarks
                 DataRow dr = ((DataTable)(m_bsBMS.DataSource)).NewRow();
                 int bms_index = (int)dr[def.Field.BMS_Index];
 
-                if (m_bmt_value == def.BookmarkType.BMT_Value_Music)
+                if (m_bmt_value == def.BookmarkType.BMT_Value_Album)
                 {
-                    dr[def.Field.BMS_BMT_Value] = def.BookmarkType.BMT_Value_Music;
+                    dr[def.Field.BMS_BMT_Value] = def.BookmarkType.BMT_Value_Album;
+                    dr[def.Field.BMS_Band] = string.Empty;
+                    dr[def.Field.BMS_Album] = string.Empty;
+                }
+                else if (m_bmt_value == def.BookmarkType.BMT_Value_Song)
+                {
+                    dr[def.Field.BMS_BMT_Value] = def.BookmarkType.BMT_Value_Song;
                     dr[def.Field.BMS_Band] = string.Empty;
                     dr[def.Field.BMS_Album] = string.Empty;
                     dr[def.Field.BMS_Song] = string.Empty;
@@ -323,9 +338,9 @@ namespace ms.Bookmarks
                 dr[def.Field.BMS_URL] = string.Empty;
                 ((DataTable)(m_bsBMS.DataSource)).Rows.Add(dr);
 
-                // selects new row, triggers current cell changed
+                // selects new row, triggers current cell changed; shortcut: song and album has band
                 dgvBMS.CurrentCell = dgvBMS.Rows.Cast<DataGridViewRow>().Where(r => (int)r.Cells[def.Field.BMS_Index].Value == bms_index).First()
-                    .Cells[m_bmt_value == def.BookmarkType.BMT_Value_Music ? def.Field.BMS_Band : def.Field.BMS_Description];
+                    .Cells[m_bmt_value == def.BookmarkType.BMT_Value_General ? def.Field.BMS_Description : def.Field.BMS_Band];
 
                 Forms_Enabled();
             }
@@ -380,8 +395,10 @@ namespace ms.Bookmarks
 		{
             try
             {
-                if (m_bmt_value == def.BookmarkType.BMT_Value_Music)
-                    m_bms_row_index_music = dgvBMS.CurrentRow?.Index;
+                if (m_bmt_value == def.BookmarkType.BMT_Value_Album)
+                    m_bms_row_index_album = dgvBMS.CurrentRow?.Index;
+                else if (m_bmt_value == def.BookmarkType.BMT_Value_Song)
+                    m_bms_row_index_song = dgvBMS.CurrentRow?.Index;
                 else
                     m_bms_row_index_general = dgvBMS.CurrentRow?.Index;
 
@@ -392,17 +409,24 @@ namespace ms.Bookmarks
 
                 m_bsBMS.Filter = $"{def.Field.BMS_BMT_Value} = {m_bmt_value}";
 
-                bool visible = m_bmt_value == def.BookmarkType.BMT_Value_Music;
+                bool visible = m_bmt_value != def.BookmarkType.BMT_Value_General;
                 dgvBMS.Columns[def.Field.BMS_Band].Visible = visible;
                 dgvBMS.Columns[def.Field.BMS_Album].Visible = visible;
-                dgvBMS.Columns[def.Field.BMS_Song].Visible = visible;
+                dgvBMS.Columns[def.Field.BMS_Song].Visible = visible && m_bmt_value != def.BookmarkType.BMT_Value_Album;
                 dgvBMS.Columns[def.Field.BMS_Description].Visible = !visible;
                 pnlDetailsMusic.Visible = visible;
+                lblSong.Visible = txtSong.Visible = visible && m_bmt_value != def.BookmarkType.BMT_Value_Album;
                 pnlDetailsGeneral.Visible = !visible;
 
+                int? m_bms_row_index_music = null;
+                if (m_bmt_value == def.BookmarkType.BMT_Value_Album)
+                    m_bms_row_index_music = m_bms_row_index_album;
+                else if (m_bmt_value == def.BookmarkType.BMT_Value_Song)
+                    m_bms_row_index_music = m_bms_row_index_song;
+
                 if (dgvBMS.Rows.Count > 0)
-                    dgvBMS.CurrentCell = dgvBMS.Rows[(m_bmt_value == def.BookmarkType.BMT_Value_Music ? m_bms_row_index_music : m_bms_row_index_general) ?? 0]
-                        .Cells[m_bmt_value == def.BookmarkType.BMT_Value_Music ? def.Field.BMS_Band : def.Field.BMS_Description];
+                    dgvBMS.CurrentCell = dgvBMS.Rows[(m_bmt_value != def.BookmarkType.BMT_Value_General ? m_bms_row_index_music : m_bms_row_index_general) ?? 0]
+                        .Cells[m_bmt_value != def.BookmarkType.BMT_Value_General ? def.Field.BMS_Band : def.Field.BMS_Description];
 
                 Forms_Enabled();
             }

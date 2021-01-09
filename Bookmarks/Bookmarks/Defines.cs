@@ -33,10 +33,12 @@ namespace ms.Bookmarks
 		public static class BookmarkType
 		{
 			public const int BMT_Value_General = 1;
-			public const int BMT_Value_Music = 2;
+			public const int BMT_Value_Song = 2;
+			public const int BMT_Value_Album = 3;
 
 			public const string BMT_Define_General = "General";
-			public const string BMT_Define_Music = "Music";
+			public const string BMT_Define_Song = "Song";
+			public const string BMT_Define_Album = "Album";
 		}
 
 		public static class colHeader
