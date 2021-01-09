@@ -25,6 +25,10 @@ namespace ms.Bookmarks
 			public const string BMS_Album = "BMS_Album";
 			public const string BMS_Song = "BMS_Song";
 
+			public const string BMS_Origin = "BMS_Origin";
+			public const string BMS_Genre = "BMS_Genre";
+			public const string BMS_Title = "BMS_Title";
+
 			public const string d_BMT_Index = "d_BMT_Index";
 			public const string BMT_Value = "BMT_Value";
 			public const string BMT_Define = "BMT_Define";
@@ -35,14 +39,20 @@ namespace ms.Bookmarks
 			public const int BMT_Value_General = 1;
 			public const int BMT_Value_Song = 2;
 			public const int BMT_Value_Album = 3;
+			public const int BMT_Value_Movie = 4;
 
 			public const string BMT_Define_General = "General";
 			public const string BMT_Define_Song = "Song";
 			public const string BMT_Define_Album = "Album";
+			public const string BMT_Define_Movie = "Movie";
 		}
 
 		public static class colHeader
 		{
+			public const string Origin = "Origin";
+			public const string Genre = "Genre";
+			public const string Title = "Title";
+
 			public const string Band = "Band";
 			public const string Album = "Album";
 			public const string Song = "Song";

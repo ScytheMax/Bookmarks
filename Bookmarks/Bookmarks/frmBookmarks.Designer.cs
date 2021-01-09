@@ -46,10 +46,18 @@
 			this.pnlDetailsGeneral = new System.Windows.Forms.Panel();
 			this.txtDescription = new System.Windows.Forms.TextBox();
 			this.lblDescription = new System.Windows.Forms.Label();
+			this.pnlDetailsMovie = new System.Windows.Forms.Panel();
+			this.lblTitle = new System.Windows.Forms.Label();
+			this.txtTitle = new System.Windows.Forms.TextBox();
+			this.txtOrigin = new System.Windows.Forms.TextBox();
+			this.lblGenre = new System.Windows.Forms.Label();
+			this.txtGenre = new System.Windows.Forms.TextBox();
+			this.lblOrigin = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.dgvBMS)).BeginInit();
 			this.pnlDetails.SuspendLayout();
 			this.pnlDetailsMusic.SuspendLayout();
 			this.pnlDetailsGeneral.SuspendLayout();
+			this.pnlDetailsMovie.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// dgvBMS
@@ -222,11 +230,76 @@
 			this.lblDescription.TabIndex = 4;
 			this.lblDescription.Text = "Description";
 			// 
+			// pnlDetailsMovie
+			// 
+			this.pnlDetailsMovie.Controls.Add(this.lblTitle);
+			this.pnlDetailsMovie.Controls.Add(this.txtTitle);
+			this.pnlDetailsMovie.Controls.Add(this.txtOrigin);
+			this.pnlDetailsMovie.Controls.Add(this.lblGenre);
+			this.pnlDetailsMovie.Controls.Add(this.txtGenre);
+			this.pnlDetailsMovie.Controls.Add(this.lblOrigin);
+			this.pnlDetailsMovie.Location = new System.Drawing.Point(461, 148);
+			this.pnlDetailsMovie.Name = "pnlDetailsMovie";
+			this.pnlDetailsMovie.Size = new System.Drawing.Size(231, 110);
+			this.pnlDetailsMovie.TabIndex = 12;
+			// 
+			// lblTitle
+			// 
+			this.lblTitle.AutoSize = true;
+			this.lblTitle.Location = new System.Drawing.Point(21, 73);
+			this.lblTitle.Name = "lblTitle";
+			this.lblTitle.Size = new System.Drawing.Size(27, 13);
+			this.lblTitle.TabIndex = 7;
+			this.lblTitle.Text = "Title";
+			// 
+			// txtTitle
+			// 
+			this.txtTitle.Location = new System.Drawing.Point(87, 70);
+			this.txtTitle.Name = "txtTitle";
+			this.txtTitle.Size = new System.Drawing.Size(110, 20);
+			this.txtTitle.TabIndex = 6;
+			this.txtTitle.TextChanged += new System.EventHandler(this.txtTitle_TextChanged);
+			// 
+			// txtOrigin
+			// 
+			this.txtOrigin.Location = new System.Drawing.Point(87, 18);
+			this.txtOrigin.Name = "txtOrigin";
+			this.txtOrigin.Size = new System.Drawing.Size(110, 20);
+			this.txtOrigin.TabIndex = 2;
+			this.txtOrigin.TextChanged += new System.EventHandler(this.txtOrigin_TextChanged);
+			// 
+			// lblGenre
+			// 
+			this.lblGenre.AutoSize = true;
+			this.lblGenre.Location = new System.Drawing.Point(21, 47);
+			this.lblGenre.Name = "lblGenre";
+			this.lblGenre.Size = new System.Drawing.Size(36, 13);
+			this.lblGenre.TabIndex = 5;
+			this.lblGenre.Text = "Genre";
+			// 
+			// txtGenre
+			// 
+			this.txtGenre.Location = new System.Drawing.Point(87, 44);
+			this.txtGenre.Name = "txtGenre";
+			this.txtGenre.Size = new System.Drawing.Size(110, 20);
+			this.txtGenre.TabIndex = 3;
+			this.txtGenre.TextChanged += new System.EventHandler(this.txtGenre_TextChanged);
+			// 
+			// lblOrigin
+			// 
+			this.lblOrigin.AutoSize = true;
+			this.lblOrigin.Location = new System.Drawing.Point(21, 21);
+			this.lblOrigin.Name = "lblOrigin";
+			this.lblOrigin.Size = new System.Drawing.Size(34, 13);
+			this.lblOrigin.TabIndex = 4;
+			this.lblOrigin.Text = "Origin";
+			// 
 			// frmBookmarks
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.ClientSize = new System.Drawing.Size(711, 343);
+			this.Controls.Add(this.pnlDetailsMovie);
 			this.Controls.Add(this.pnlDetailsGeneral);
 			this.Controls.Add(this.pnlDetailsMusic);
 			this.Controls.Add(this.cboBookmarkType);
@@ -244,6 +317,8 @@
 			this.pnlDetailsMusic.PerformLayout();
 			this.pnlDetailsGeneral.ResumeLayout(false);
 			this.pnlDetailsGeneral.PerformLayout();
+			this.pnlDetailsMovie.ResumeLayout(false);
+			this.pnlDetailsMovie.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -268,6 +343,13 @@
 		private System.Windows.Forms.Panel pnlDetailsGeneral;
 		private System.Windows.Forms.TextBox txtDescription;
 		private System.Windows.Forms.Label lblDescription;
+		private System.Windows.Forms.Panel pnlDetailsMovie;
+		private System.Windows.Forms.Label lblTitle;
+		private System.Windows.Forms.TextBox txtTitle;
+		private System.Windows.Forms.TextBox txtOrigin;
+		private System.Windows.Forms.Label lblGenre;
+		private System.Windows.Forms.TextBox txtGenre;
+		private System.Windows.Forms.Label lblOrigin;
 	}
 }
 
