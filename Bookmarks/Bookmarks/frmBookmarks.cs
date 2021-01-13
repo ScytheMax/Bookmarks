@@ -15,6 +15,9 @@ namespace ms.Bookmarks
         private DataTable m_dtBMT;
         private DataSet m_ds = new DataSet(def.XML.KEY_DS);
 
+        private DataTable m_dtORG;
+        private DataTable m_dtGNR;
+
         private int m_bmt_value;
         private int? m_bms_row_index_movie = null;
         private int? m_bms_row_index_album = null;
@@ -52,8 +55,8 @@ namespace ms.Bookmarks
                 col_BMS.Add(new DataColumn(def.Field.BMS_Band, typeof(string)));
                 col_BMS.Add(new DataColumn(def.Field.BMS_Album, typeof(string)));
                 col_BMS.Add(new DataColumn(def.Field.BMS_Song, typeof(string)));
-                col_BMS.Add(new DataColumn(def.Field.BMS_Origin, typeof(string)));
-                col_BMS.Add(new DataColumn(def.Field.BMS_Genre, typeof(string)));
+                col_BMS.Add(new DataColumn(def.Field.BMS_ORG_Value, typeof(int)));
+                col_BMS.Add(new DataColumn(def.Field.BMS_GNR_Value, typeof(int)));
                 col_BMS.Add(new DataColumn(def.Field.BMS_Title, typeof(string)));
 
                 foreach (DataColumn col in col_BMS)
@@ -75,6 +78,31 @@ namespace ms.Bookmarks
                 m_dtBMT.Rows.Add(2, def.BookmarkType.BMT_Value_Song, def.BookmarkType.BMT_Define_Song);
                 m_dtBMT.Rows.Add(3, def.BookmarkType.BMT_Value_Album, def.BookmarkType.BMT_Define_Album);
                 m_dtBMT.Rows.Add(4, def.BookmarkType.BMT_Value_Movie, def.BookmarkType.BMT_Define_Movie);
+
+
+                m_dtORG = new DataTable(def.Table.d_ORG);
+                var col_ORG = m_dtORG.Columns;
+                col_ORG.Add(new DataColumn(def.Field.d_ORG_Index, typeof(int))
+                {
+                    AutoIncrement = true,
+                    Unique = true,
+                });
+                col_ORG.Add(new DataColumn(def.Field.ORG_Value, typeof(int)));
+                col_ORG.Add(new DataColumn(def.Field.ORG_Define, typeof(string)));
+                foreach (DataColumn col in col_ORG)
+                    col.AllowDBNull = false;
+
+                m_dtGNR = new DataTable(def.Table.d_ORG);
+                var col_GNR = m_dtGNR.Columns;
+                col_GNR.Add(new DataColumn(def.Field.d_GNR_Index, typeof(int))
+                {
+                    AutoIncrement = true,
+                    Unique = true,
+                });
+                col_GNR.Add(new DataColumn(def.Field.GNR_Value, typeof(int)));
+                col_GNR.Add(new DataColumn(def.Field.GNR_Define, typeof(string)));
+                foreach (DataColumn col in col_GNR)
+                    col.AllowDBNull = false;
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
@@ -100,8 +128,46 @@ namespace ms.Bookmarks
                     m_dtBMS.Merge(m_ds.Tables[def.Table.BMS]);
                 m_dtBMS.AcceptChanges();
                 m_bsBMS.DataSource = m_dtBMS;
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
 
-                Forms_Enabled();
+            try
+            {
+                if (!Directory.Exists(Config.dir))
+                    Directory.CreateDirectory(Config.dir);
+
+                string filePath = Path.Combine(Config.dir, def.FileName.xml_Origin);
+                if (!File.Exists(filePath))
+                {
+                    using (var fs = File.Create(filePath))
+                    {
+                        m_dtORG.WriteXml(fs);
+                    }
+                }
+
+                DataTable dt = new DataTable();
+                dt.ReadXml(filePath);
+                m_dtORG.Merge(dt);
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
+
+            try
+            {
+                if (!Directory.Exists(Config.dir))
+                    Directory.CreateDirectory(Config.dir);
+
+                string filePath = Path.Combine(Config.dir, def.FileName.xml_Genre);
+                if (!File.Exists(filePath))
+                {
+                    using (var fs = File.Create(filePath))
+                    {
+                        m_dtORG.WriteXml(fs);
+                    }
+                }
+
+                DataTable dt = new DataTable();
+                dt.ReadXml(filePath);
+                m_dtGNR.Merge(dt);
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
@@ -109,7 +175,7 @@ namespace ms.Bookmarks
         private void Forms_Enabled()
         {
             if (m_bmt_value == def.BookmarkType.BMT_Value_Movie)
-                txtOrigin.Enabled = txtGenre.Enabled = txtTitle.Enabled = dgvBMS.Rows.Count > 0;
+                cboOrigin.Enabled = cboGenre.Enabled = txtTitle.Enabled = dgvBMS.Rows.Count > 0;
             else if (m_bmt_value == def.BookmarkType.BMT_Value_Album)
                 txtBand.Enabled = txtAlbum.Enabled = dgvBMS.Rows.Count > 0;
             else if (m_bmt_value == def.BookmarkType.BMT_Value_Song)
@@ -135,19 +201,31 @@ namespace ms.Bookmarks
 
                 dgvBMS.Columns.Add(new DataGridViewTextBoxColumn()
                 {
-                    DataPropertyName = def.Field.BMS_Origin,
-                    Name = def.Field.BMS_Origin,
+                    DataPropertyName = def.Field.ORG_Define,
+                    Name = def.Field.ORG_Define,
                     HeaderText = def.colHeader.Origin,
                     Width = 100,
                     ReadOnly = true,
                 });
                 dgvBMS.Columns.Add(new DataGridViewTextBoxColumn()
                 {
-                    DataPropertyName = def.Field.BMS_Genre,
-                    Name = def.Field.BMS_Genre,
+                    DataPropertyName = def.Field.BMS_ORG_Value,
+                    Name = def.Field.BMS_ORG_Value,
+                    Visible = false,
+                });
+                dgvBMS.Columns.Add(new DataGridViewTextBoxColumn()
+                {
+                    DataPropertyName = def.Field.GNR_Define,
+                    Name = def.Field.GNR_Define,
                     HeaderText = def.colHeader.Genre,
                     Width = 100,
                     ReadOnly = true
+                });
+                dgvBMS.Columns.Add(new DataGridViewTextBoxColumn()
+                {
+                    DataPropertyName = def.Field.BMS_GNR_Value,
+                    Name = def.Field.BMS_GNR_Value,
+                    Visible = false,
                 });
                 dgvBMS.Columns.Add(new DataGridViewTextBoxColumn()
                 {
@@ -224,9 +302,22 @@ namespace ms.Bookmarks
 		{
             cboBookmarkType.DisplayMember = def.Field.BMT_Define;
             cboBookmarkType.ValueMember = def.Field.BMT_Value;
-            cboBookmarkType.DataSource = m_dtBMT;
+            cboBookmarkType.DataSource = m_dtBMT; 
+            cboBookmarkType.SelectedValueChanged += cboBookmarkType_SelectedValueChanged;
             cboBookmarkType.SelectedValue = def.BookmarkType.BMT_Value_Song;
             m_bmt_value = def.BookmarkType.BMT_Value_Song;
+
+            cboOrigin.DisplayMember = def.Field.ORG_Define;
+            cboOrigin.ValueMember = def.Field.ORG_Value;
+            cboOrigin.DataSource = m_dtORG;
+            cboOrigin.SelectedValue = -1;
+            cboOrigin.SelectedValueChanged += cboOrigin_SelectedValueChanged;
+
+            cboGenre.DisplayMember = def.Field.GNR_Define;
+            cboGenre.ValueMember = def.Field.GNR_Value;
+            cboGenre.DataSource = m_dtGNR;
+            cboGenre.SelectedValue = -1;
+            cboGenre.SelectedValueChanged += cboGenre_SelectedValueChanged;
         }
 
 		private void dgvBMS_CurrentCellChanged(object sender, EventArgs e)
@@ -235,6 +326,8 @@ namespace ms.Bookmarks
             {
                 if (dgvBMS.CurrentRow == null)
 				{
+                    cboOrigin.SelectedValue = -1;
+                    cboGenre.SelectedValue = -1;
                     txtBand.Text = string.Empty;
                     txtAlbum.Text = string.Empty;
                     txtSong.Text = string.Empty;
@@ -244,8 +337,10 @@ namespace ms.Bookmarks
 
                 if (m_bmt_value == def.BookmarkType.BMT_Value_Movie)
 				{
-                    txtOrigin.Text = (string)dgvBMS.CurrentRow.Cells[def.Field.BMS_Origin].Value;
-                    txtGenre.Text = (string)dgvBMS.CurrentRow.Cells[def.Field.BMS_Genre].Value;
+                    cboOrigin.SelectedValue = (int)dgvBMS.CurrentRow.Cells[def.Field.BMS_ORG_Value].Value;
+                    dgvBMS.CurrentRow.Cells[def.Field.ORG_Define].Value = cboOrigin.Text;
+                    cboGenre.SelectedValue = (int)dgvBMS.CurrentRow.Cells[def.Field.BMS_GNR_Value].Value;
+                    dgvBMS.CurrentRow.Cells[def.Field.GNR_Define].Value = cboGenre.Text;
                     txtTitle.Text = (string)dgvBMS.CurrentRow.Cells[def.Field.BMS_Title].Value;
                 }
                 else if (m_bmt_value == def.BookmarkType.BMT_Value_Album)
@@ -345,28 +440,34 @@ namespace ms.Bookmarks
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
 
-        private void txtOrigin_TextChanged(object sender, EventArgs e)
+        private void cboOrigin_SelectedValueChanged(object sender, EventArgs e)
         {
             try
             {
                 if (dgvBMS.CurrentRow == null)
                     return;
 
-                if (txtOrigin.Text != (string)dgvBMS.CurrentRow.Cells[def.Field.BMS_Origin].Value)
-                    dgvBMS.CurrentRow.Cells[def.Field.BMS_Origin].Value = txtOrigin.Text;
+                if (cboOrigin.SelectedValue != null && (int)cboOrigin.SelectedValue != (int)dgvBMS.CurrentRow.Cells[def.Field.BMS_ORG_Value].Value)
+				{
+                    dgvBMS.CurrentRow.Cells[def.Field.BMS_ORG_Value].Value = cboOrigin.SelectedValue;
+                    dgvBMS.CurrentRow.Cells[def.Field.ORG_Define].Value = cboOrigin.Text;
+                }             
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
 
-        private void txtGenre_TextChanged(object sender, EventArgs e)
+		private void cboGenre_SelectedValueChanged(object sender, EventArgs e)
         {
             try
             {
                 if (dgvBMS.CurrentRow == null)
                     return;
 
-                if (txtGenre.Text != (string)dgvBMS.CurrentRow.Cells[def.Field.BMS_Genre].Value)
-                    dgvBMS.CurrentRow.Cells[def.Field.BMS_Genre].Value = txtGenre.Text;
+                if (cboGenre.SelectedValue != null && (int)cboGenre.SelectedValue != (int)dgvBMS.CurrentRow.Cells[def.Field.BMS_GNR_Value].Value)
+                {
+                    dgvBMS.CurrentRow.Cells[def.Field.BMS_GNR_Value].Value = cboGenre.SelectedValue;
+                    dgvBMS.CurrentRow.Cells[def.Field.GNR_Define].Value = cboGenre.Text;
+                }
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
@@ -397,8 +498,8 @@ namespace ms.Bookmarks
                 if (m_bmt_value == def.BookmarkType.BMT_Value_Movie)
                 {
                     dr[def.Field.BMS_BMT_Value] = def.BookmarkType.BMT_Value_Movie;
-                    dr[def.Field.BMS_Origin] = string.Empty;
-                    dr[def.Field.BMS_Genre] = string.Empty;
+                    dr[def.Field.BMS_ORG_Value] = m_dtORG.Rows[0].Field<int>(def.Field.ORG_Value);
+                    dr[def.Field.BMS_GNR_Value] = m_dtGNR.Rows[0].Field<int>(def.Field.GNR_Value);
                     dr[def.Field.BMS_Title] = string.Empty;
                     bms_col = def.Field.BMS_Title;
                 }
@@ -494,12 +595,9 @@ namespace ms.Bookmarks
 
                 m_bsBMS.Filter = $"{def.Field.BMS_BMT_Value} = {m_bmt_value}";
 
-                
-
-
                 pnlDetailsMovie.Visible = m_bmt_value == def.BookmarkType.BMT_Value_Movie;
-                dgvBMS.Columns[def.Field.BMS_Origin].Visible = m_bmt_value == def.BookmarkType.BMT_Value_Movie;
-                dgvBMS.Columns[def.Field.BMS_Genre].Visible = m_bmt_value == def.BookmarkType.BMT_Value_Movie;
+                dgvBMS.Columns[def.Field.ORG_Define].Visible = m_bmt_value == def.BookmarkType.BMT_Value_Movie;
+                dgvBMS.Columns[def.Field.GNR_Define].Visible = m_bmt_value == def.BookmarkType.BMT_Value_Movie;
                 dgvBMS.Columns[def.Field.BMS_Title].Visible = m_bmt_value == def.BookmarkType.BMT_Value_Movie;
 
                 pnlDetailsMusic.Visible = m_bmt_value == def.BookmarkType.BMT_Value_Song || m_bmt_value == def.BookmarkType.BMT_Value_Album;
@@ -507,7 +605,7 @@ namespace ms.Bookmarks
                 dgvBMS.Columns[def.Field.BMS_Album].Visible = m_bmt_value == def.BookmarkType.BMT_Value_Song || m_bmt_value == def.BookmarkType.BMT_Value_Album;
                 dgvBMS.Columns[def.Field.BMS_Song].Visible = m_bmt_value == def.BookmarkType.BMT_Value_Song && m_bmt_value != def.BookmarkType.BMT_Value_Album;
                 lblSong.Visible = txtSong.Visible = m_bmt_value == def.BookmarkType.BMT_Value_Song && m_bmt_value != def.BookmarkType.BMT_Value_Album;
-                
+
                 pnlDetailsGeneral.Visible = m_bmt_value == def.BookmarkType.BMT_Value_General;
                 dgvBMS.Columns[def.Field.BMS_Description].Visible = m_bmt_value == def.BookmarkType.BMT_Value_General;
 
@@ -515,25 +613,82 @@ namespace ms.Bookmarks
                 string bms_col = def.Field.BMS_Description;
 
                 if (m_bmt_value == def.BookmarkType.BMT_Value_Movie)
-				{
+                {
                     bms_row_index = m_bms_row_index_movie;
                     bms_col = def.Field.BMS_Title;
-                }                
+
+                    foreach (DataGridViewRow dgvr in dgvBMS.Rows)
+                    {
+                        dgvr.Cells[def.Field.ORG_Define].Value = m_dtORG.Select($"{def.Field.ORG_Value}={dgvr.Cells[def.Field.BMS_ORG_Value].Value}")
+                            .First().Field<string>(def.Field.ORG_Define);
+                        dgvr.Cells[def.Field.GNR_Define].Value = m_dtGNR.Select($"{def.Field.GNR_Value}={dgvr.Cells[def.Field.BMS_GNR_Value].Value}")
+                            .First().Field<string>(def.Field.GNR_Define);
+                    }
+                }
                 else if (m_bmt_value == def.BookmarkType.BMT_Value_Album)
-				{
+                {
                     bms_row_index = m_bms_row_index_album;
                     bms_col = def.Field.BMS_Band;
-                }   
+                }
                 else if (m_bmt_value == def.BookmarkType.BMT_Value_Song)
-				{
+                {
                     bms_row_index = m_bms_row_index_song;
                     bms_col = def.Field.BMS_Band;
-                }                    
+                }
 
                 if (dgvBMS.Rows.Count > 0)
                     dgvBMS.CurrentCell = dgvBMS.Rows[bms_row_index ?? 0].Cells[bms_col];
 
                 Forms_Enabled();
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
+
+        }
+
+		private void btnOrigin_Click(object sender, EventArgs e)
+		{
+            try
+            {
+                Form f = new frmDefineTable(def.FormName.Origin);
+                ((frmDefineTable)f).init(def.Table.d_ORG, def.FileName.xml_Origin);
+                f.ShowDialog();
+
+                DataTable dt = new DataTable();
+                dt.ReadXml(Path.Combine(Config.dir, def.FileName.xml_Origin));
+                m_dtORG.Rows.Clear();
+                m_dtORG.Merge(dt);
+
+                cboOrigin.SelectedValue = dgvBMS.CurrentRow != null ? dgvBMS.CurrentRow.Cells[def.Field.BMS_ORG_Value].Value : -1;
+
+                foreach (DataGridViewRow dgvr in dgvBMS.Rows)
+                {
+                    dgvr.Cells[def.Field.ORG_Define].Value = m_dtORG.Select($"{def.Field.ORG_Value}={dgvr.Cells[def.Field.BMS_ORG_Value].Value}")
+                        .First().Field<string>(def.Field.ORG_Define);
+                }
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
+        }
+
+		private void btnGenre_Click(object sender, EventArgs e)
+		{
+            try
+            {
+                Form f = new frmDefineTable(def.FormName.Genre);
+                ((frmDefineTable)f).init(def.Table.d_GNR, def.FileName.xml_Genre);
+                f.ShowDialog();
+
+                DataTable dt = new DataTable();
+                dt.ReadXml(Path.Combine(Config.dir, def.FileName.xml_Genre));
+                m_dtGNR.Rows.Clear();
+                m_dtGNR.Merge(dt);
+
+                cboGenre.SelectedValue = dgvBMS.CurrentRow != null ? dgvBMS.CurrentRow.Cells[def.Field.BMS_GNR_Value].Value : -1;
+
+                foreach (DataGridViewRow dgvr in dgvBMS.Rows)
+                {
+                    dgvr.Cells[def.Field.GNR_Define].Value = m_dtGNR.Select($"{def.Field.GNR_Value}={dgvr.Cells[def.Field.BMS_GNR_Value].Value}")
+                        .First().Field<string>(def.Field.GNR_Define);
+                }
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }

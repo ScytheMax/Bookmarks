@@ -47,11 +47,13 @@
 			this.txtDescription = new System.Windows.Forms.TextBox();
 			this.lblDescription = new System.Windows.Forms.Label();
 			this.pnlDetailsMovie = new System.Windows.Forms.Panel();
+			this.cboGenre = new System.Windows.Forms.ComboBox();
+			this.cboOrigin = new System.Windows.Forms.ComboBox();
+			this.btnGenre = new System.Windows.Forms.Button();
+			this.btnOrigin = new System.Windows.Forms.Button();
 			this.lblTitle = new System.Windows.Forms.Label();
 			this.txtTitle = new System.Windows.Forms.TextBox();
-			this.txtOrigin = new System.Windows.Forms.TextBox();
 			this.lblGenre = new System.Windows.Forms.Label();
-			this.txtGenre = new System.Windows.Forms.TextBox();
 			this.lblOrigin = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.dgvBMS)).BeginInit();
 			this.pnlDetails.SuspendLayout();
@@ -138,7 +140,6 @@
 			this.cboBookmarkType.Name = "cboBookmarkType";
 			this.cboBookmarkType.Size = new System.Drawing.Size(121, 21);
 			this.cboBookmarkType.TabIndex = 9;
-			this.cboBookmarkType.SelectedValueChanged += new System.EventHandler(this.cboBookmarkType_SelectedValueChanged);
 			// 
 			// pnlDetailsMusic
 			// 
@@ -232,16 +233,58 @@
 			// 
 			// pnlDetailsMovie
 			// 
+			this.pnlDetailsMovie.Controls.Add(this.cboGenre);
+			this.pnlDetailsMovie.Controls.Add(this.cboOrigin);
+			this.pnlDetailsMovie.Controls.Add(this.btnGenre);
+			this.pnlDetailsMovie.Controls.Add(this.btnOrigin);
 			this.pnlDetailsMovie.Controls.Add(this.lblTitle);
 			this.pnlDetailsMovie.Controls.Add(this.txtTitle);
-			this.pnlDetailsMovie.Controls.Add(this.txtOrigin);
 			this.pnlDetailsMovie.Controls.Add(this.lblGenre);
-			this.pnlDetailsMovie.Controls.Add(this.txtGenre);
 			this.pnlDetailsMovie.Controls.Add(this.lblOrigin);
 			this.pnlDetailsMovie.Location = new System.Drawing.Point(461, 148);
 			this.pnlDetailsMovie.Name = "pnlDetailsMovie";
 			this.pnlDetailsMovie.Size = new System.Drawing.Size(231, 110);
 			this.pnlDetailsMovie.TabIndex = 12;
+			// 
+			// cboGenre
+			// 
+			this.cboGenre.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGenre.FormattingEnabled = true;
+			this.cboGenre.Location = new System.Drawing.Point(87, 43);
+			this.cboGenre.Margin = new System.Windows.Forms.Padding(2);
+			this.cboGenre.Name = "cboGenre";
+			this.cboGenre.Size = new System.Drawing.Size(80, 21);
+			this.cboGenre.TabIndex = 11;
+			// 
+			// cboOrigin
+			// 
+			this.cboOrigin.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboOrigin.FormattingEnabled = true;
+			this.cboOrigin.Location = new System.Drawing.Point(87, 18);
+			this.cboOrigin.Margin = new System.Windows.Forms.Padding(2);
+			this.cboOrigin.Name = "cboOrigin";
+			this.cboOrigin.Size = new System.Drawing.Size(80, 21);
+			this.cboOrigin.TabIndex = 10;
+			// 
+			// btnGenre
+			// 
+			this.btnGenre.Location = new System.Drawing.Point(172, 42);
+			this.btnGenre.Name = "btnGenre";
+			this.btnGenre.Size = new System.Drawing.Size(24, 20);
+			this.btnGenre.TabIndex = 9;
+			this.btnGenre.Text = "...";
+			this.btnGenre.UseVisualStyleBackColor = true;
+			this.btnGenre.Click += new System.EventHandler(this.btnGenre_Click);
+			// 
+			// btnOrigin
+			// 
+			this.btnOrigin.Location = new System.Drawing.Point(173, 18);
+			this.btnOrigin.Name = "btnOrigin";
+			this.btnOrigin.Size = new System.Drawing.Size(24, 20);
+			this.btnOrigin.TabIndex = 8;
+			this.btnOrigin.Text = "...";
+			this.btnOrigin.UseVisualStyleBackColor = true;
+			this.btnOrigin.Click += new System.EventHandler(this.btnOrigin_Click);
 			// 
 			// lblTitle
 			// 
@@ -260,30 +303,14 @@
 			this.txtTitle.TabIndex = 6;
 			this.txtTitle.TextChanged += new System.EventHandler(this.txtTitle_TextChanged);
 			// 
-			// txtOrigin
-			// 
-			this.txtOrigin.Location = new System.Drawing.Point(87, 18);
-			this.txtOrigin.Name = "txtOrigin";
-			this.txtOrigin.Size = new System.Drawing.Size(110, 20);
-			this.txtOrigin.TabIndex = 2;
-			this.txtOrigin.TextChanged += new System.EventHandler(this.txtOrigin_TextChanged);
-			// 
 			// lblGenre
 			// 
 			this.lblGenre.AutoSize = true;
-			this.lblGenre.Location = new System.Drawing.Point(21, 47);
+			this.lblGenre.Location = new System.Drawing.Point(21, 46);
 			this.lblGenre.Name = "lblGenre";
 			this.lblGenre.Size = new System.Drawing.Size(36, 13);
 			this.lblGenre.TabIndex = 5;
 			this.lblGenre.Text = "Genre";
-			// 
-			// txtGenre
-			// 
-			this.txtGenre.Location = new System.Drawing.Point(87, 44);
-			this.txtGenre.Name = "txtGenre";
-			this.txtGenre.Size = new System.Drawing.Size(110, 20);
-			this.txtGenre.TabIndex = 3;
-			this.txtGenre.TextChanged += new System.EventHandler(this.txtGenre_TextChanged);
 			// 
 			// lblOrigin
 			// 
@@ -346,10 +373,12 @@
 		private System.Windows.Forms.Panel pnlDetailsMovie;
 		private System.Windows.Forms.Label lblTitle;
 		private System.Windows.Forms.TextBox txtTitle;
-		private System.Windows.Forms.TextBox txtOrigin;
 		private System.Windows.Forms.Label lblGenre;
-		private System.Windows.Forms.TextBox txtGenre;
 		private System.Windows.Forms.Label lblOrigin;
+		private System.Windows.Forms.Button btnGenre;
+		private System.Windows.Forms.Button btnOrigin;
+		private System.Windows.Forms.ComboBox cboOrigin;
+		private System.Windows.Forms.ComboBox cboGenre;
 	}
 }
 
