@@ -32,7 +32,7 @@ namespace ms.Bookmarks
         public void init()
         {
             prepare_DataTables();
-            loadXML();
+            loadDataTable();
             prepare_dgvBMS();
             prepare_Forms();
 
@@ -107,69 +107,11 @@ namespace ms.Bookmarks
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }
 
-        private void loadXML()
+        private void loadDataTable()
         {
-            try
-            {
-                if (!Directory.Exists(Config.dir))
-                    Directory.CreateDirectory(Config.dir);
-
-                string filePath = Path.Combine(Config.dir, def.FileName.xml_Bookmarks);
-                if (!File.Exists(filePath))
-                {
-                    using (var fs = File.Create(filePath))
-                    {
-                        m_ds.WriteXml(fs);
-                    }
-                }
-
-                m_ds.ReadXml(filePath);
-                if (m_ds.Tables.Contains(def.Table.BMS))
-                    m_dtBMS.Merge(m_ds.Tables[def.Table.BMS]);
-                m_dtBMS.AcceptChanges();
-                m_bsBMS.DataSource = m_dtBMS;
-            }
-            catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
-
-            try
-            {
-                if (!Directory.Exists(Config.dir))
-                    Directory.CreateDirectory(Config.dir);
-
-                string filePath = Path.Combine(Config.dir, def.FileName.xml_Origin);
-                if (!File.Exists(filePath))
-                {
-                    using (var fs = File.Create(filePath))
-                    {
-                        m_dtORG.WriteXml(fs);
-                    }
-                }
-
-                DataTable dt = new DataTable();
-                dt.ReadXml(filePath);
-                m_dtORG.Merge(dt);
-            }
-            catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
-
-            try
-            {
-                if (!Directory.Exists(Config.dir))
-                    Directory.CreateDirectory(Config.dir);
-
-                string filePath = Path.Combine(Config.dir, def.FileName.xml_Genre);
-                if (!File.Exists(filePath))
-                {
-                    using (var fs = File.Create(filePath))
-                    {
-                        m_dtORG.WriteXml(fs);
-                    }
-                }
-
-                DataTable dt = new DataTable();
-                dt.ReadXml(filePath);
-                m_dtGNR.Merge(dt);
-            }
-            catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
+            ReadXML.LoadDataTable(def.FileName.xml_Bookmarks, m_dtBMS);
+            ReadXML.LoadDataTable(def.FileName.xml_Origin, m_dtORG);
+            ReadXML.LoadDataTable(def.FileName.xml_Genre, m_dtGNR);
         }
 
         private void Forms_Enabled()
@@ -292,7 +234,8 @@ namespace ms.Bookmarks
 
                 dgvBMS.CurrentCellChanged += dgvBMS_CurrentCellChanged;
 				dgvBMS.CellDoubleClick += dgvBMS_CellDoubleClick;
-                
+
+                m_bsBMS.DataSource = m_dtBMS;
                 dgvBMS.DataSource = m_bsBMS;
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
@@ -558,12 +501,19 @@ namespace ms.Bookmarks
                     return;
 
                 // TODO check if just changes or updates can be added to the file
-                if (m_ds.Tables.Contains(def.Table.BMS))
-                    m_ds.Tables.Remove(def.Table.BMS);
-                m_ds.Tables.Add(m_dtBMS);
-                
-                m_ds.WriteXml(Path.Combine(Config.dir, def.FileName.xml_Bookmarks), XmlWriteMode.WriteSchema);
+                m_dtBMS.WriteXml(Path.Combine(Config.dir, def.FileName.xml_Bookmarks), XmlWriteMode.WriteSchema);
                 m_dtBMS.AcceptChanges();
+
+                if (m_bmt_value == def.BookmarkType.BMT_Value_Movie)
+                {
+                    foreach (DataGridViewRow dgvr in dgvBMS.Rows)
+                    {
+                        dgvr.Cells[def.Field.ORG_Define].Value = m_dtORG.Select($"{def.Field.ORG_Value}={dgvr.Cells[def.Field.BMS_ORG_Value].Value}")
+                            .First().Field<string>(def.Field.ORG_Define);
+                        dgvr.Cells[def.Field.GNR_Define].Value = m_dtGNR.Select($"{def.Field.GNR_Value}={dgvr.Cells[def.Field.BMS_GNR_Value].Value}")
+                            .First().Field<string>(def.Field.GNR_Define);
+                    }
+                }
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }

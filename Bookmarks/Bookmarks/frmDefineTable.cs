@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace ms.Bookmarks
 {
@@ -27,7 +27,7 @@ namespace ms.Bookmarks
             m_tableDefine = table.Replace("d_", "") + "_Define";
             m_filename = filename;
             prepare_DataTable(table);
-            loadXML();
+            ReadXML.LoadDataTable(m_filename, m_dt);
             prepare_dgv();
             Forms_Enabled();
 		}
@@ -53,30 +53,6 @@ namespace ms.Bookmarks
 
                 foreach (DataColumn col in col_BMS)
                     col.AllowDBNull = false;
-            }
-            catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
-        }
-
-        private void loadXML()
-        {
-            try
-            {
-                if (!Directory.Exists(Config.dir))
-                    Directory.CreateDirectory(Config.dir);
-
-                string filePath = Path.Combine(Config.dir, m_filename);
-                if (!File.Exists(filePath))
-                {
-                    using (var fs = File.Create(filePath))
-                    {
-                        m_dt.WriteXml(fs);
-                    }
-                }
-
-                DataTable dt = new DataTable();
-                dt.ReadXml(filePath);
-                m_dt.Merge(dt);
-                m_dt.AcceptChanges();
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, def.Win.Error); }
         }

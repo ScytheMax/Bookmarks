@@ -60,6 +60,7 @@
     <Compile Include="frmDefineTable.Designer.cs">
       <DependentUpon>frmDefineTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="ReadXML.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmBookmarks.resx">
